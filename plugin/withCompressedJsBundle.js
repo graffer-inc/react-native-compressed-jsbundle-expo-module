@@ -12,46 +12,42 @@ function addCompressScriptToBuildPhase(project) {
     );
   }
 
-  shellScriptBuildPhases.forEach((phase) => {
-    const buildPhase = phase.value;
-    const newScriptLine = `../node_modules/react-native-compressed-jsbundle/tool/compress-xcode.sh`;
-
-    if (!buildPhase.shellScript.includes(newScriptLine)) {
-      buildPhase.shellScript = buildPhase.shellScript.replace(
-        /"$/,
-        `\\n${newScriptLine}\\n"`
-      );
-    }
-  });
+  const newScriptLine = `../node_modules/react-native-compressed-jsbundle/tool/compress-xcode.sh`;
+  if (!shellScriptBuildPhases.shellScript.includes(newScriptLine)) {
+    shellScriptBuildPhases.shellScript = shellScriptBuildPhases.shellScript.replace(
+      /"$/,
+      `\\n${newScriptLine}\\n"`
+    );
+  }
+  console.log("shellScriptBuildPhases", shellScriptBuildPhases);
 }
 
 module.exports = function withCompressedJsBundle(config) {
   config = withAppDelegate(config, (config) => {
-    if (config.modResults.language === "objc") {
-      let contents = config.modResults.contents;
+    if (config.modResults.language !== "objcpp") {
+      throw new Error("Cannot modify AppDelegate of non-objcpp project.");
+    }
+    let contents = config.modResults.contents;
 
-      const importStatement = `#import <react-native-compressed-jsbundle/IMOCompressedBundleLoader.h>`;
-      if (!contents.includes(importStatement)) {
-        contents = contents.replace(
-          /#import "AppDelegate.h"/,
-          `#import "AppDelegate.h"\n${importStatement}`
-        );
-      }
+    const importStatement = `#import <react-native-compressed-jsbundle/IMOCompressedBundleLoader.h>`;
+    if (!contents.includes(importStatement)) {
+      contents = contents.replace(
+        /#import "AppDelegate.h"/,
+        `#import "AppDelegate.h"\n${importStatement}`
+      );
+    }
 
-      const methodImplementation = `
+    const methodImplementation = `
 - (void)loadSourceForBridge:(RCTBridge *)bridge onProgress:(RCTSourceLoadProgressBlock)onProgress onComplete:(RCTSourceLoadBlock)loadCallback {
-  [IMOCompressedBundleLoader loadSourceForBridge:bridge bridgeDelegate:self onProgress:onProgress onComplete:loadCallback];
+[IMOCompressedBundleLoader loadSourceForBridge:bridge bridgeDelegate:self onProgress:onProgress onComplete:loadCallback];
 }
 `;
-      if (!contents.includes("loadSourceForBridge")) {
-        contents = contents.replace(/\@end/, `${methodImplementation}\n@end`);
-      }
-
-      config.modResults.contents = contents;
-    } else {
-      throw new Error("Cannot modify AppDelegate of non-objc project.");
+    if (!contents.includes("loadSourceForBridge")) {
+      contents = contents.replace(/\@end/, `${methodImplementation}\n@end`);
     }
-    return config;
+
+    config.modResults.contents = contents;
+  return config;
   });
 
   config = withXcodeProject(config, (config) => {
