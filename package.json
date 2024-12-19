@@ -32,10 +32,5 @@
     "react": "*",
     "react-native": "*",
     "react-native-compressed-jsbundle": "^0.1.2"
-  },
-  "expo": {
-    "plugin": [
-      "./plugin/withCompressedJsBundle"
-    ]
   }
 }
