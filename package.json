@@ -1,0 +1,41 @@
+{
+  "name": "react-native-compressed-jsbundle-expo-module",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "npx prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "react-native-compressed-jsbundle-expo-module",
+    "ReactNativeCompressedJsbundleExpoModule"
+  ],
+  "repository": "https://github.com/graffer-inc/react-native-compressed-jsbundle-expo-module",
+  "bugs": {
+    "url": "https://github.com/graffer-inc/react-native-compressed-jsbundle-expo-module/issues"
+  },
+  "author": "kyo-ago <ago@graffer.jp>",
+  "license": "MIT",
+  "homepage": "https://github.com/graffer-inc/react-native-compressed-jsbundle-expo-module#readme",
+  "dependencies": {
+    "@expo/config-plugins": "^9.0.12"
+  },
+  "devDependencies": {
+    "@types/react": "~18.3.12",
+    "expo": "~52.0.0",
+    "expo-module-scripts": "^4.0.2",
+    "react-native": "0.76.0"
+  },
+  "peerDependencies": {
+    "expo": "*",
+    "react": "*",
+    "react-native": "*",
+    "react-native-compressed-jsbundle": "^0.1.2"
+  },
+  "expo": {
+    "plugin": [
+      "./plugin/withCompressedJsBundle"
+    ]
+  }
+}
