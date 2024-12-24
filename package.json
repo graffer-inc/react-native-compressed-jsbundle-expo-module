@@ -19,7 +19,8 @@
   "license": "MIT",
   "homepage": "https://github.com/graffer-inc/react-native-compressed-jsbundle-expo-module#readme",
   "dependencies": {
-    "@expo/config-plugins": "^9.0.12"
+    "@expo/config-plugins": "^9.0.12",
+    "glob": "^11.0.0"
   },
   "devDependencies": {
     "@types/react": "~18.3.12",
